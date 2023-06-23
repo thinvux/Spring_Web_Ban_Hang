@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>update account</title>
+
+    <script src="js/jquery-3.6.4.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<h3>Update Account</h3>
+
+<div className="container" style="margin-left: 50px">
+    <form action="">
+        <div className="form-group">
+            <label for="id">Account ID</label>
+            <input type="text" className="form-control" id="id"><br><br>
+
+            <label for="age"> Age </label>
+            <input type="number" className="form-control" id="age"> <br><br>
+
+            <label for="address"> Address </label>
+            <input type="text" className="form-control" id="address"> <br><br>
+
+            <label for="userName"> User Name </label>
+            <input type="text" className="form-control" id="userName"> <br><br>
+
+            <label for="fullName"> Full Name </label>
+            <input type="text" className="form-control" id="fullName"> <br><br>
+
+            <label for="passWord"> Pass Word </label>
+            <input type="password" className="form-control" id="passWord"><br><br>
+
+            <label for="departmentId"> Department ID </label>
+            <input type="departmentId" className="form-control" id="departmentId"><br><br>
+        </div>
+
+        <button type="button" id="btn_account_update" className="btn btn-primary"> Submit</button>
+    </form>
+</div>
+
+<script>
+    $(function () {
+        var isLogin = localStorage.getItem("isLogin");
+        if (isLogin === "true") {
+            var userName = localStorage.getItem("userName");
+            var passWord = localStorage.getItem("passWord");
+
+            let searchParams = new URLSearchParams(window.location.search);
+            let id = searchParams.get("id");
+
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:8080/account/" + id,
+                dataType: "JSON",
+
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + passWord));
+                },
+
+                success: function (res, xhr) {
+                    console.log("get account by ID Successfully!");
+                    console.log(res);
+
+                    $("#id").val(res.id);
+                    $("#age").val(res.age);
+                    $("#address").val(res.address);
+                    $("#userName").val(res.userName);
+                    $("#fullName").val(res.fullName);
+                    $("#passWord").val(res.passWord);
+                    $("#departmentId").val(res.departmentId);
+                }
+            });
+
+            $("#btn_account_update").click(function () {
+
+                var account = {};
+                account.id = $("#id").val();
+                account.age = $("#age").val();
+                account.address = $("#address").val();
+                account.userName = $("#userName").val();
+                account.fullName = $("#fullName").val();
+                account.passWord = $("#passWord").val();
+                account.departmentId = $("#departmentId").val();
+                alert("update thành công")
+
+                $.ajax({
+                    type: "PUT",
+                    url: "http://localhost:8080/account",
+                    contentType: "application/json",
+                    data: JSON.stringify(account),
+
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + passWord));
+                    },
+
+                    success: function (res) {
+                        console.log("Update Successfunlly ! " + account);
+                        console.log(res.json)
+                        window.location.href = "./index.html";
+                    },
+                    error: function (error) {
+                        alert(error.responseText)
+                    }
+                });
+            });
+        } else {
+            window.location.replace("./login.html");
+        }
+    });
+</script>
+
+</body>
+</html>

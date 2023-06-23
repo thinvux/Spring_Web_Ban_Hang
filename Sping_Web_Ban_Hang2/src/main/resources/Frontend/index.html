@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="js/jquery-3.6.4.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="menu.css">
+
+</head>
+<body>
+<!---------------------------------  Department     ------------------------------------>
+<h3>List Department</h3>
+<button type="button" id="btn_logout">Logout</button><br><br>
+<button id="D"><a href="department_add.html">Add Department</a></button>
+
+<p id="id"></p>
+<p id="departmentName"></p>
+
+<div class="container">
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th> Id</th>
+            <th> Department_Name</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="departmentBody">
+
+        </tbody>
+    </table>
+</div> <br><br> <hr>
+
+<!---------------------------------  Account     ------------------------------------>
+
+<h3>List Account</h3> <br>
+<button id="A"><a href="account_add.html">Add Account</a></button><br><br>
+
+<div class="container">
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th> Id</th>
+            <th> Age</th>
+            <th> address</th>
+            <th> userName</th>
+            <th> fullName</th>
+            <th> passWord</th>
+            <th> Department Name</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="accountBody">
+
+        </tbody>
+    </table>
+</div> <br><br><br>
+
+<script>
+    // ----------------------  Show all    ---------------------------- //
+    // show all department
+    // ajax là sử dùng jquery để gọi lên server theo phương thức :
+    // GET, POST, PUT, DELETE
+
+    var isLogin = localStorage.getItem("isLogin");
+
+    if (isLogin === "true") {
+        var userName = localStorage.getItem("userName");
+        var passWord = localStorage.getItem("passWord");
+
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/deparment",
+            dataType: "JSON",
+
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + passWord));
+            },
+
+            success: function (res, xhr) {
+                console.log("Successfunlly !");
+                console.log(res);
+                getAllDepartment(res);
+
+            }
+        });
+    } else {
+        window.location.replace("./login.html");
+    }
+
+    function getAllDepartment(res) {
+        let contentBody = ""
+        for (let i = 0; i < res.length; i++) {
+            contentBody += "<tr>";
+            contentBody += "    <td>" + res[i].id + "</td>";
+
+            if (res[i].departmentName === null) {
+                contentBody += "    <td></td>";
+            } else {
+                contentBody += "    <td>" + res[i].departmentName + "</td>";
+            }
+            contentBody += "    <td><button id='" + res[i].id + "' onclick='deleteData(this)'> Delete </button></td>";
+            contentBody += "    <td><a href='department_Update.html?id=" + res[i].id + "' > Update </a> </td>";
+            contentBody += "</tr>";
+        }
+        $("#departmentBody").append(contentBody);
+    }
+
+    // get all account
+    var isLogin = localStorage.getItem("isLogin");
+    if (isLogin === "true") {
+        var userName = localStorage.getItem("userName");
+        var passWord = localStorage.getItem("passWord");
+
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/account2",
+            dataType: "JSON",
+
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + passWord));
+            },
+
+            success: function (res, xhr) {
+                console.log("get list account Successfully!");
+                console.log(res);
+                getAllAccount(res);
+            }
+        });
+    } else {
+        window.location.replace("./login.html");
+    }
+
+    function getAllAccount(res) {
+        let contentBody1 = ""
+        for (let i = 0; i < res.length; i++) {
+            contentBody1 += "<tr>";
+            contentBody1 += "    <td>" + res[i].id + "</td>";
+            if (res[i].age == null) {
+                contentBody1 += "    <td></td>";
+            } else {
+                contentBody1 += "    <td>" + res[i].age + "</td>";
+            }
+
+            if (res[i].address == null) {
+                contentBody1 += "    <td></td>";
+            } else {
+                contentBody1 += "    <td>" + res[i].address + "</td>";
+            }
+
+            if (res[i].userName == null) {
+                contentBody1 += "    <td></td>";
+            } else {
+                contentBody1 += "    <td>" + res[i].userName + "</td>";
+            }
+
+            if (res[i].fullName == null) {
+                contentBody1 += "    <td></td>";
+            } else {
+                contentBody1 += "    <td>" + res[i].fullName + "</td>";
+            }
+
+            if (res[i].passWord == null) {
+                contentBody1 += "    <td></td>";
+            } else {
+                contentBody1 += "    <td>" + res[i].passWord + "</td>";
+            }
+
+            console.log("res[i].departmentName");
+            console.log(res[i].departmentName);
+            if (res[i].departmentName == null) {
+                contentBody1 += "    <td></td>";
+            } else {
+                contentBody1 += "    <td>" + res[i].departmentName + "</td>";
+            }
+
+            contentBody1 += "    <td><button id='" + res[i].id + "' onclick='deleteDataAccount(this)'> Delete </button></td>";
+            contentBody1 += "    <td><a href='account_update.html?id=" + res[i].id + "' > Update </a> </td>";
+            contentBody1 += "</tr>";
+        }
+        $("#accountBody").append(contentBody1);
+    }
+
+    // ----------------------  Delete    ---------------------------- //
+
+    // delete department by id
+    function deleteData(obj) {
+        var isLogin = localStorage.getItem("isLogin");
+        if (isLogin === "true") {
+            var userName = localStorage.getItem("userName");
+            var passWord = localStorage.getItem("passWord");
+
+            let id = obj.id
+
+            $.ajax({
+                type: "DELETE",
+                url: "http://localhost:8080/deparment/" + id,
+                dataType: "JSON",
+
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + passWord));
+                },
+
+                success: function (res) {
+                    console.log("Delete Successfunlly !");
+                    console.log(res.json)
+                },
+                error: function (error) {
+                    alert(error.responseText)
+
+                    $("#departmentBody").empty(); // sau khi xóa sẽ tự reload lại sau đó làm mới data
+
+                    $.ajax({
+                        type: "GET",
+                        url: "http://localhost:8080/deparment",
+                        dataType: "JSON",
+
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + passWord));
+                        },
+                        success: function (res, xhr) {
+                            console.log("Successfunlly !");
+                            console.log(res);
+                            getAllDepartment(res);
+                        }
+                    });
+                }
+            });
+        } else {
+            window.location.replace("./login.html");
+        }
+    }
+
+    // delete account by id
+    function deleteDataAccount(obj) {
+        var isLogin = localStorage.getItem("isLogin");
+        if (isLogin === "true") {
+            var userName = localStorage.getItem("userName");
+            var passWord = localStorage.getItem("passWord");
+
+            let id = obj.id
+
+            $.ajax({
+                type: "DELETE",
+                url: "http://localhost:8080/account/" + id,
+                dataType: "JSON",
+
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + passWord));
+                },
+
+                success: function (res) {
+                    console.log("Delete Successfunlly !");
+                    console.log(res.json)
+                },
+                error: function (error) {
+                    // console.log(error.responseText);
+                    alert(error.responseText)
+
+                    $("#accountBody").empty();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "http://localhost:8080/account2",
+                        dataType: "JSON",
+
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("Authorization", "Basic " + btoa(userName + ":" + passWord));
+                        },
+
+                        success: function (res, xhr) {
+                            console.log("Successfunlly !");
+                            console.log(res);
+                            getAllAccount(res);
+                        }
+                    });
+                }
+            });
+        } else {
+            window.location.replace("./login.html");
+        }
+    }
+
+    $(function () {
+        $("#btn_logout").click(function () {
+            localStorage.setItem("isLogin", "false");
+            window.location.replace("./login.html");
+        });
+    });
+</script>
+
+</body>
+</html>

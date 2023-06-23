@@ -1,0 +1,35 @@
+h3{
+    text-align: center;
+}
+body{
+    background-color: darkgray;
+}
+table{
+    background-color: lightgoldenrodyellow;
+}
+#btn_logout{
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;  /* thay đổi biểu tượng khi di vào buttom */
+}
+#btn_logout{
+    margin-left: 90%;
+}
+#D{
+    text-align: center;
+    margin: auto ;
+    padding: 10px 35px;
+    font-size: 18px;
+}
+#A{
+    text-align: center;
+    margin: auto ;
+    padding: 10px 35px;
+    font-size: 18px;
+}
+
